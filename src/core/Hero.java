@@ -2,9 +2,9 @@ package core;
 
 public class Hero extends Entity{
 	//attribute
-	private boolean onFloor;
-	private boolean onPlatform;
-	private int jumpCount;
+	private boolean onFloor; //true when on floor
+	private boolean onPlatform; //true when on wood platform
+	private int jumpCount; 
 	private double jumpPower;
 	private boolean jumping;
 	private double jumpTo;
@@ -15,8 +15,8 @@ public class Hero extends Entity{
 	public Hero() {
 	}
 	
-	public Hero(double x, double y, int life,int h,int w,int jumppower) {
-		super(x,y,h,w,life);
+	public Hero(double x, double y,int h,int w, int life,String path ,int jumppower) {
+		super(x,y,h,w,life,path);
 		this.jumpPower = jumppower;
 	}
 	//method press button
@@ -45,7 +45,7 @@ public class Hero extends Entity{
 	
 	//method loop
 	public void gravity() {
-		if(jumping == false && onMidAir == true) {
+		if(jumping == false ) {
 			move("down",10);
 			return;
 		}
@@ -53,8 +53,8 @@ public class Hero extends Entity{
 	}
 
 	public void jumpAction() {
-		if(jumping = true) {
-			if(this.posY < jumpTo) {
+		if(jumping == true) {
+			if(this.posY <= jumpTo) {
 				move("up",10);
 			}
 			else {
