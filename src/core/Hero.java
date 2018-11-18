@@ -1,33 +1,32 @@
 package core;
 
+import java.util.ArrayList;
+
 public class Hero extends Entity{
 	//attribute
-	private boolean onFloor; //true when on floor
-	private boolean onPlatform; //true when on wood platform
 	private int jumpCount; 
-	private double jumpPower;
-	private boolean jumping;
 	private double jumpTo;
-	private boolean onMidAir;
 	private boolean attacking;
+	private FeetStatus feetStatus;
+	private double velocityY;
 	
 	//Constructor
 	public Hero() {
 	}
 	
-	public Hero(double x, double y,int h,int w, int life,String path ,int jumppower) {
-		super(x,y,h,w,life,path);
-		this.jumpPower = jumppower;
+	public Hero(double x, double y,int h,int w,String path ,int jumppower) {
+		super(x,y,h,w,path);
+		this.jumpTo = this.posY;
+		this.feetStatus = FeetStatus.FLOOR;
+		this.velocityY = 0;
 	}
 	//method press button
 	public void jump() {
 		if (jumpCount < 2) { 
-			jumpTo = this.posX + jumpPower;
-			jumping = true;
 			jumpCount += 1;
-			return;
+			this.feetStatus = FeetStatus.AIR;
+			this.velocityY = 13 ;
 		}
-		return;
 	}
 	
 	public void attack() {
@@ -44,47 +43,43 @@ public class Hero extends Entity{
 	}
 	
 	//method loop
-	public void gravity() {
-		if(jumping == false ) {
-			move("down",10);
-			return;
+	/*public void gravity(Floor floor) {
+		if(jumping == false && this.feetStatus == FeetStatus.AIR ) {
+			move("down",5);
 		}
-		return;
+		if(this.isCollide(floor) == true) {
+			this.feetStatus = FeetStatus.FLOOR ;
+		}
 	}
 
 	public void jumpAction() {
 		if(jumping == true) {
-			if(this.posY <= jumpTo) {
-				move("up",10);
+			if(this.posY >= jumpTo) {
+				move("up",100);
 			}
 			else {
 				jumping = false;
 				jumpCount = 0;
 			}
 		}
+	} not used anymore*/
+	
+	//new jump method
+	public void jumpUpdate(Floor floor) {
+		if(this.feetStatus == FeetStatus.AIR) {
+			move("up",this.velocityY);
+			this.velocityY = this.velocityY - 0.5;
+		}
+		if(this.isCollide(floor) == true) {
+			this.feetStatus = FeetStatus.FLOOR ;
+			this.jumpCount = 0;
+			this.setPosY(floor.getPosY() - this.getHight());
+		}
 	}
 	
-	public void checkGround() {
-		//floor midair platform
-	}
+	
 	
 	//getter setter
-	public boolean isOnFloor() {
-		return onFloor;
-	}
-
-	public void setOnFloor(boolean onFloor) {
-		this.onFloor = onFloor;
-	}
-
-	public boolean isOnPlatform() {
-		return onPlatform;
-	}
-
-	public void setOnPlatform(boolean onPlatform) {
-		this.onPlatform = onPlatform;
-	}
-
 	public int getJumpCount() {
 		return jumpCount;
 	}
@@ -93,29 +88,6 @@ public class Hero extends Entity{
 		this.jumpCount = jumpCount;
 	}
 
-	public double getJumpPower() {
-		return jumpPower;
-	}
-
-	public void setJumpPower(double jumpPower) {
-		this.jumpPower = jumpPower;
-	}
-
-	public boolean isJumping() {
-		return jumping;
-	}
-
-	public void setJumping(boolean jumping) {
-		this.jumping = jumping;
-	}
-
-	public boolean isOnMidAir() {
-		return onMidAir;
-	}
-
-	public void setOnMidAir(boolean onMidAir) {
-		this.onMidAir = onMidAir;
-	}
 
 	public double getJumpTo() {
 		return jumpTo;

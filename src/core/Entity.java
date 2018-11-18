@@ -8,7 +8,6 @@ public class Entity {
 	//attribute
 	protected double posX;
 	protected double posY;
-	protected int life;
 	protected boolean death;
 	protected int hight;
 	protected int weight;
@@ -21,20 +20,18 @@ public class Entity {
 		
 	}
 	
-	public Entity(double x,double y,int h,int w,int life) {
+	public Entity(double x,double y,int h,int w) {
 		posX = x;
 		posY = y;
 		hight = h;
 		weight = w;
-		this.life=life;
 	}
 	
-	public Entity(double x,double y,int h,int w,int life, String path) {
+	public Entity(double x,double y,int h,int w, String path) {
 		posX = x;
 		posY = y;
 		hight = h;
 		weight = w;
-		this.life=life;
 		this.imagePath = path;
 		this.imageView = new ImageView(new Image(ClassLoader.getSystemResource(this.imagePath).toString()));
 		this.updateImageView();
@@ -43,11 +40,11 @@ public class Entity {
 	//method
 	public void move(String direction,double distance) {
 		if(direction.equals("up")) {
-			posY = posY + distance;
+			posY = posY - distance;
 			//return;
 		}
 		if(direction.equals("down")) {
-			posY = posY - distance;
+			posY = posY + distance;
 			//return;
 		}
 		if(direction.equals("right")) {
@@ -61,19 +58,10 @@ public class Entity {
 		this.updateImageView();
 	}
 	
-	public void takeDamage() {
-		life = life - 1;
+	//collision detect
+	public boolean isCollide(Entity other) {
+		return this.imageView.getBoundsInParent().intersects(other.getImageView().getBoundsInParent());
 	}
-	
-	public void isDeath() {
-		if(this.getLife()<=0) {
-			death = true;
-		}
-	}
-
-	
-	
-	
 	
 	//getter setter
 	public double getPosX() {
@@ -82,6 +70,7 @@ public class Entity {
 
 	public void setPosX(double posX) {
 		this.posX = posX;
+		this.updateImageView();
 	}
 
 	public double getPosY() {
@@ -90,14 +79,7 @@ public class Entity {
 
 	public void setPosY(double posY) {
 		this.posY = posY;
-	}
-
-	public int getLife() {
-		return life;
-	}
-
-	public void setLife(int life) {
-		this.life = life;
+		this.updateImageView();
 	}
 
 	public int getHight() {
